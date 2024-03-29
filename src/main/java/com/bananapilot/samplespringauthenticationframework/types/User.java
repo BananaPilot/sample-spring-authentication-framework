@@ -3,9 +3,9 @@ package com.bananapilot.samplespringauthenticationframework.types;
 public class User {
     private String username;
     private String password;
-    private Roles[] roles;
+    private String[] roles;
 
-    public User(String username, String password, Roles[] roles) {
+    public User(String username, String password, String[] roles) {
         this.username = username;
         this.password = password;
         this.roles = roles;
@@ -31,7 +31,7 @@ public class User {
         this.password = password;
     }
 
-    public Roles[] getRoles() {
+    public String[] getRoles() {
         return roles;
     }
 }
