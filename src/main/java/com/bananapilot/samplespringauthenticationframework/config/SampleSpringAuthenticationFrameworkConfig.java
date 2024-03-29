@@ -1,9 +1,8 @@
 package com.bananapilot.samplespringauthenticationframework.config;
 
-
-import com.bananapilot.samplespringauthenticationframework.repo.UserDao;
 import com.bananapilot.samplespringauthenticationframework.service.UserService;
 import com.bananapilot.samplespringauthenticationframework.service.UserServiceDefaultImpl;
+import com.bananapilot.samplespringauthenticationframework.utils.JWTUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -19,6 +18,12 @@ public class SampleSpringAuthenticationFrameworkConfig {
     public UserService userService() {
         logger.info("Creating the user service");
         return new UserServiceDefaultImpl();
+    }
+
+    @Bean
+    public JWTUtils jwtUtils() {
+        logger.info("Creating a JWTUtils Bean");
+        return new JWTUtils();
     }
 
 }
