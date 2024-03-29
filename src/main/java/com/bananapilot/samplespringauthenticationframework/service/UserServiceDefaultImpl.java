@@ -1,24 +1,19 @@
 package com.bananapilot.samplespringauthenticationframework.service;
 
-import com.bananapilot.samplespringauthenticationframework.IncorrectPasswordException;
 import com.bananapilot.samplespringauthenticationframework.repo.UserDao;
 import com.bananapilot.samplespringauthenticationframework.types.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Service
-public class UserServiceDefaultImpl implements UserService{
-    UserDao userDao;
+public class UserServiceDefaultImpl implements UserService {
 
-    public UserServiceDefaultImpl(UserDao userDao) {
-        this.userDao = userDao;
-    }
+    @Autowired
+    UserDao userDao;
     @Override
-    public User authenticate(String username, String password) throws IncorrectPasswordException {
-        User user = userDao.getUserByUsername(username);
-        if (user.getPassword().equals(password)) {
-            return user;
-        }
-        throw new IncorrectPasswordException("inserted password is incorrect");
+    public User getUser(String username, String password) {
+        Assert.notNull(userDao, "UserDao is null. Make sure to declare a UserDao as a spring bean");
+        return userDao.getUserByUsername(username);
     }
 }

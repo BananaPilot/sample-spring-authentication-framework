@@ -1,6 +1,8 @@
 package com.bananapilot.samplespringauthenticationframework.types;
 
 public class User {
+
+    private int id;
     private String username;
     private String password;
     private String[] roles;
@@ -13,6 +15,10 @@ public class User {
 
     public User () {
 
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getUsername() {

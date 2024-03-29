@@ -16,9 +16,9 @@ public class SampleSpringAuthenticationFrameworkConfig {
 
     @Bean
     @ConditionalOnMissingBean(UserService.class)
-    public UserService userService(UserDao userDao) {
+    public UserService userService() {
         logger.info("Creating the user service");
-        return new UserServiceDefaultImpl(userDao);
+        return new UserServiceDefaultImpl();
     }
 
 }
