@@ -14,18 +14,18 @@ import java.util.List;
 
 
 public class JWTUtils {
-
+    //to declare in to application.properties
     @Value("${framework.jwt.hashKey}")
     private String hashKey;
-
+    //to declare in to application.properties
     @Value("${framework.jwt.advice}")
     private String audience;
-
+    //to declare in to application.properties
     @Value("${framework.jwt.timeToExpire}")
     private long timeToExpire;
-
     private Key key;
 
+    //after the creation on the instance parses a key as a signature
     @PostConstruct
     public void generateKey() {
         key = Keys.hmacShaKeyFor(hashKey.getBytes());

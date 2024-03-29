@@ -13,8 +13,7 @@ public class User {
         this.roles = roles;
     }
 
-    public User () {
-
+    public User() {
     }
 
     public int getId() {

@@ -11,6 +11,7 @@ public class UserServiceDefaultImpl implements UserService {
 
     @Autowired
     UserDao userDao;
+
     @Override
     public User getUser(String username, String password) {
         Assert.notNull(userDao, "UserDao is null. Make sure to declare a UserDao as a spring bean");
