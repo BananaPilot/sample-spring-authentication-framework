@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+
 @Configuration
 public class SampleSpringAuthenticationFrameworkConfig {
     private static final Logger logger = LoggerFactory.getLogger(SampleSpringAuthenticationFrameworkConfig.class);
@@ -24,6 +26,10 @@ public class SampleSpringAuthenticationFrameworkConfig {
     public JWTUtils jwtUtils() {
         logger.info("Creating a JWTUtils Bean");
         return new JWTUtils();
+    }
+
+    public void test() {
+        System.out.println(jwtUtils().getJWT("fabio", 1, Arrays.asList("ADMIN")));
     }
 
 }

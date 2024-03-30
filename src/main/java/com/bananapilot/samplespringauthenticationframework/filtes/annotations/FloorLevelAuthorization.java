@@ -1,4 +1,4 @@
-package com.bananapilot.samplespringauthenticationframework.filtes;
+package com.bananapilot.samplespringauthenticationframework.filtes.annotations;
 
 import java.lang.annotation.*;
 

@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 @Service
 public class UserServiceDefaultImpl implements UserService {
 
-    @Autowired
+    @Autowired(required = false)
     UserDao userDao;
 
     @Override
