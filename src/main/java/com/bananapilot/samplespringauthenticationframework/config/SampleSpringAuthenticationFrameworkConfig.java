@@ -1,5 +1,6 @@
 package com.bananapilot.samplespringauthenticationframework.config;
 
+import com.bananapilot.samplespringauthenticationframework.filtes.FilterChanInit;
 import com.bananapilot.samplespringauthenticationframework.service.UserService;
 import com.bananapilot.samplespringauthenticationframework.service.UserServiceDefaultImpl;
 import com.bananapilot.samplespringauthenticationframework.utils.JWTUtils;
@@ -24,6 +25,12 @@ public class SampleSpringAuthenticationFrameworkConfig {
     public JWTUtils jwtUtils() {
         logger.info("Creating a JWTUtils Bean");
         return new JWTUtils();
+    }
+
+    @Bean
+    public FilterChanInit fitFilterChanInit() {
+        logger.info("Creating a filterChain bean");
+        return new FilterChanInit();
     }
 
 }
