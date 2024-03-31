@@ -9,7 +9,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.method.HandlerMethod;
 
 public class FilterFactory {
-    public static OncePerRequestFilter doFactory(Jws<Claims> jwtToken, HandlerMethod handlerMethod) {
+    public static Filter doFactory(Jws<Claims> jwtToken, HandlerMethod handlerMethod) {
         if (handlerMethod.hasMethodAnnotation(NoAuthorization.class)) {
             return new NoAuthorizationFilter();
         }

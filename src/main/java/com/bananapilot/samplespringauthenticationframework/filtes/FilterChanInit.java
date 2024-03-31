@@ -16,15 +16,15 @@ import java.io.IOException;
 
 @Component
 @Order(0)
-public class FilterChanInit extends OncePerRequestFilter {
+public class FilterChanInit extends Filter {
 
     @Autowired
     private JWTUtils jwtUtils;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        OncePerRequestFilter oncePerRequestFilter = FilterFactory.doFactory(jwtUtils.validate(request.getHeader("Authorization")), (HandlerMethod) request.getAttribute("handleMethodForAuthorization"));
-        Assert.notNull(oncePerRequestFilter, "filter is null something went wrong");
-        oncePerRequestFilter.doFilter(request, response, filterChain);
+        Filter filter = FilterFactory.doFactory(jwtUtils.validate(request.getHeader("Authorization")), (HandlerMethod) request.getAttribute("handleMethodForAuthorization"));
+        Assert.notNull(filter, "filter is null something went wrong");
+        filter.doFilter(request, response, filterChain);
     }
 }
