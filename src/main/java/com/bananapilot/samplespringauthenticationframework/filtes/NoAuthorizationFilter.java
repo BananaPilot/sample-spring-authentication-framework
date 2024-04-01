@@ -10,7 +10,7 @@ import java.io.IOException;
 public class NoAuthorizationFilter extends Filter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        this.doFilter(request, response, filterChain);
+    public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        response.setStatus(200);
     }
 }

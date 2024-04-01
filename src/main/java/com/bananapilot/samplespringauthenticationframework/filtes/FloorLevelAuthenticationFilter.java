@@ -25,7 +25,7 @@ public class FloorLevelAuthenticationFilter extends Filter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (claimsJws == null) {
             response.setStatus(401);
         }

@@ -9,13 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.method.HandlerMethod;
 
 import java.io.IOException;
 
 @Component
 @Order(0)
-public class FilterChanInit extends Filter {
+public class FilterChanInit extends OncePerRequestFilter {
 
     @Autowired
     private JWTUtils jwtUtils;
