@@ -8,26 +8,28 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.method.HandlerMethod;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
 
 @Component
 @Order(0)
-public class FilterChanInit extends OncePerRequestFilter {
+public class LoginFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JWTUtils jwtUtils;
+    JWTUtils jwtUtils;
 
-
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return !request.getRequestURI().equals("/login");
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().equals("/login")) return;
-        Filter filter = FilterFactory.doFactory(jwtUtils.validate(request.getHeader("Authorization")), (HandlerMethod) request.getAttribute("handleMethodForAuthorization"));
-        Assert.notNull(filter, "filter is null something went wrong");
-        filter.doFilter(request, response, filterChain);
+        Map<String, String[]> params = request.getParameterMap();
+        response.addHeader("Authorization", jwtUtils.getJWT(params.get("username")[0], Integer.parseInt(params.get("id")[0]), Arrays.asList(params.get("roles"))));
+        response.setStatus(200);
     }
 }

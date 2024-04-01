@@ -1,6 +1,7 @@
 package com.bananapilot.samplespringauthenticationframework.config;
 
-import com.bananapilot.samplespringauthenticationframework.filtes.FilterChanInit;
+import com.bananapilot.samplespringauthenticationframework.filtes.LoginFilter;
+import com.bananapilot.samplespringauthenticationframework.filtes.MethodFilter;
 import com.bananapilot.samplespringauthenticationframework.service.UserService;
 import com.bananapilot.samplespringauthenticationframework.service.UserServiceDefaultImpl;
 import com.bananapilot.samplespringauthenticationframework.utils.JWTUtils;
@@ -30,9 +31,13 @@ public class SampleSpringAuthenticationFrameworkConfig {
     }
 
     @Bean
-    public FilterChanInit fitFilterChanInit() {
-        logger.info("Creating a filterChain bean");
-        return new FilterChanInit();
+    public LoginFilter loginFilter() {
+        return new LoginFilter();
+    }
+
+    @Bean
+    public MethodFilter methodFilter() {
+        return new MethodFilter();
     }
 
 }
