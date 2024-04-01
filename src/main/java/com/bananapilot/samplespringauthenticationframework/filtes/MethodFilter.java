@@ -61,7 +61,7 @@ public class MethodFilter extends OncePerRequestFilter {
             for (String role : roles) {
                 if (user.getRoles().contains(role)) {
                     response.setStatus(200);
-                    response.addHeader("Authorization", "authenticated");
+                    response.setHeader("Authorization", "authenticated");
                 }
             }
             filterChain.doFilter(request, response);
@@ -70,7 +70,7 @@ public class MethodFilter extends OncePerRequestFilter {
             String role = handlerMethod.getMethodAnnotation(FloorLevelAuthorization.class).floorRole();
             if (floorLevel.isRoleGreaterOrEquals(role, user.getRoles())) {
                 response.setStatus(200);
-                response.addHeader("Authorization", "authenticated");
+                response.setHeader("Authorization", "authenticated");
             }
             filterChain.doFilter(request, response);
         }
