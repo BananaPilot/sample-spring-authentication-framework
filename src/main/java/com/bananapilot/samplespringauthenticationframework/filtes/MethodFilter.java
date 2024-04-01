@@ -43,7 +43,8 @@ public class MethodFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-       Jws<Claims> claimsJws =  jwtUtils.validate(request.getHeader("Authorization"));
+        filterChain.doFilter(request, response);
+        Jws<Claims> claimsJws = jwtUtils.validate(request.getHeader("Authorization"));
         if (jwtUtils == null) {
             response.setStatus(401);
             Assert.notNull(claimsJws, "jws claims are null");
@@ -57,24 +58,24 @@ public class MethodFilter extends OncePerRequestFilter {
         if (handlerMethod.hasMethodAnnotation(BasicAuthorization.class)) {
             BasicAuthorization annotation = handlerMethod.getMethodAnnotation(BasicAuthorization.class);
             List<String> roles = Arrays.asList(annotation.roles());
-            for (String role: roles) {
-                if (user.getRoles().contains(role)){
+            for (String role : roles) {
+                if (user.getRoles().contains(role)) {
                     response.setStatus(200);
                     response.addHeader("Authorization", "authenticated");
-                    return;
                 }
             }
+            filterChain.doFilter(request, response);
         }
         if (handlerMethod.hasMethodAnnotation(FloorLevelAuthorization.class)) {
             String role = handlerMethod.getMethodAnnotation(FloorLevelAuthorization.class).floorRole();
             if (floorLevel.isRoleGreaterOrEquals(role, user.getRoles())) {
                 response.setStatus(200);
                 response.addHeader("Authorization", "authenticated");
-                return;
             }
+            filterChain.doFilter(request, response);
         }
         if (handlerMethod.hasMethodAnnotation(NoAuthorization.class)) {
-            return;
+            filterChain.doFilter(request, response);
         }
         response.setStatus(403);
     }
