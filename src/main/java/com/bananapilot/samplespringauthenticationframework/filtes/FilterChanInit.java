@@ -21,8 +21,11 @@ public class FilterChanInit extends OncePerRequestFilter {
     @Autowired
     private JWTUtils jwtUtils;
 
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if (request.getRequestURI().equals("/login")) return;
         Filter filter = FilterFactory.doFactory(jwtUtils.validate(request.getHeader("Authorization")), (HandlerMethod) request.getAttribute("handleMethodForAuthorization"));
         Assert.notNull(filter, "filter is null something went wrong");
         filter.doFilter(request, response, filterChain);
