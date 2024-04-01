@@ -5,7 +5,6 @@ import com.bananapilot.samplespringauthenticationframework.filtes.annotations.Fl
 import com.bananapilot.samplespringauthenticationframework.filtes.annotations.NoAuthorization;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.method.HandlerMethod;
 
 public class FilterFactory {
