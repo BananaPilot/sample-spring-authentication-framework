@@ -8,7 +8,6 @@ import com.bananapilot.samplespringauthenticationframework.service.UserServiceDe
 import com.bananapilot.samplespringauthenticationframework.utils.JWTUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
