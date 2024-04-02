@@ -12,6 +12,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -29,7 +31,11 @@ public class LoginFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Map<String, String[]> params = request.getParameterMap();
-        response.setHeader("Authorization", jwtUtils.getJWT(params.get("username")[0], Integer.parseInt(params.get("id")[0]), Arrays.asList(params.get("roles"))));
+        response.setHeader("Authorization", jwtUtils.getJWT(
+                params.get("username")[0],
+                Integer.parseInt(params.get("id")[0]),
+                Arrays.asList(params.get("roles"))));
         response.setStatus(200);
+        filterChain.doFilter(request, response);
     }
 }

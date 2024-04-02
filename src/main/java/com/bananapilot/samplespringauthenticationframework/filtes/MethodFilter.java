@@ -8,6 +8,7 @@ import com.bananapilot.samplespringauthenticationframework.types.User;
 import com.bananapilot.samplespringauthenticationframework.utils.JWTUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-@Order(1)
+@Order(2)
 public class MethodFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -33,28 +34,28 @@ public class MethodFilter extends OncePerRequestFilter {
     @Autowired
     UserService userService;
 
-    @Autowired
+    @Autowired(required = false)
     FloorLevelImpl floorLevel;
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getHeader("Authorization").isBlank();
+    @PostConstruct
+    public void postConstruct() {
+        System.out.println(jwtUtils);
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        filterChain.doFilter(request, response);
-        Jws<Claims> claimsJws = jwtUtils.validate(request.getHeader("Authorization"));
-        if (jwtUtils == null) {
-            response.setStatus(401);
-            Assert.notNull(claimsJws, "jws claims are null");
+        if (request.getHeader("Authorization") == null) {
+            response.sendError(401);
+            filterChain.doFilter(request, response);
+            return;
         }
+        Jws<Claims> claimsJws = jwtUtils.validate(request.getHeader("Authorization"));
         User user = User.UserBuilder.anUser()
                 .withId(claimsJws.getBody().get("user-id", Integer.class))
                 .withUsername(claimsJws.getBody().getSubject())
                 .withRoles(claimsJws.getBody().get("user-roles", List.class))
                 .build();
-        HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute("handleMethodForAuthorization");
+        HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute("requestMappingHandlerMapping");
         if (handlerMethod.hasMethodAnnotation(BasicAuthorization.class)) {
             BasicAuthorization annotation = handlerMethod.getMethodAnnotation(BasicAuthorization.class);
             List<String> roles = Arrays.asList(annotation.roles());
@@ -65,6 +66,7 @@ public class MethodFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
+            return;
         }
         if (handlerMethod.hasMethodAnnotation(FloorLevelAuthorization.class)) {
             String role = handlerMethod.getMethodAnnotation(FloorLevelAuthorization.class).floorRole();
@@ -73,10 +75,13 @@ public class MethodFilter extends OncePerRequestFilter {
                 response.setHeader("Authorization", "authenticated");
             }
             filterChain.doFilter(request, response);
+            return;
         }
         if (handlerMethod.hasMethodAnnotation(NoAuthorization.class)) {
             filterChain.doFilter(request, response);
+            return;
         }
-        response.setStatus(403);
+        response.sendError(403);
+        filterChain.doFilter(request, response);
     }
 }
