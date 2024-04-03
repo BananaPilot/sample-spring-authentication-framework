@@ -8,7 +8,6 @@ import com.bananapilot.samplespringauthenticationframework.types.User;
 import com.bananapilot.samplespringauthenticationframework.utils.JWTUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +15,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.method.HandlerMethod;
 
@@ -48,17 +46,20 @@ public class MethodFilter extends OncePerRequestFilter {
         User user = User.UserBuilder.anUser()
                 .withId(claimsJws.getBody().get("user-id", Integer.class))
                 .withUsername(claimsJws.getBody().get("user-username", String.class))
-                .withRoles(claimsJws.getBody().get("user-roles", List.class))
+                .withRoles(List.of(claimsJws.getBody().get("user-roles", String.class).split(", ")))
                 .build();
-        System.out.println(user + " " + claimsJws.getBody());
         HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute("requestMappingHandlerMapping");
         if (handlerMethod.hasMethodAnnotation(BasicAuthorization.class)) {
             BasicAuthorization annotation = handlerMethod.getMethodAnnotation(BasicAuthorization.class);
             List<String> roles = Arrays.asList(annotation.roles());
+            System.out.println(user.getRoles().get(0));
             for (String role : roles) {
                 if (user.getRoles().contains(role)) {
                     response.setStatus(200);
                     response.setHeader("Authorization", "authenticated");
+                    break;
+                } else {
+                    response.sendError(403);
                 }
             }
             filterChain.doFilter(request, response);
