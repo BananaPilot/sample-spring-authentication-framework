@@ -37,6 +37,7 @@ public class JWTUtils {
                 .setAudience(audience)
                 .setExpiration(new Date(System.currentTimeMillis() + timeToExpire))
                 .setClaims(new HashMap<>() {{
+                    put("user-username", username);
                     put("user-id", userId);
                     put("user-roles", roles);
                 }})

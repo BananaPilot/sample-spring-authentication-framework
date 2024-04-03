@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.method.HandlerMethod;
 
@@ -36,11 +37,6 @@ public class MethodFilter extends OncePerRequestFilter {
     @Autowired(required = false)
     FloorLevelImpl floorLevel;
 
-    @PostConstruct
-    public void postConstruct() {
-        System.out.println(jwtUtils);
-    }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (request.getHeader("Authorization") == null) {
@@ -51,9 +47,10 @@ public class MethodFilter extends OncePerRequestFilter {
         Jws<Claims> claimsJws = jwtUtils.validate(request.getHeader("Authorization"));
         User user = User.UserBuilder.anUser()
                 .withId(claimsJws.getBody().get("user-id", Integer.class))
-                .withUsername(claimsJws.getBody().getSubject())
+                .withUsername(claimsJws.getBody().get("user-username", String.class))
                 .withRoles(claimsJws.getBody().get("user-roles", List.class))
                 .build();
+        System.out.println(user + " " + claimsJws.getBody());
         HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute("requestMappingHandlerMapping");
         if (handlerMethod.hasMethodAnnotation(BasicAuthorization.class)) {
             BasicAuthorization annotation = handlerMethod.getMethodAnnotation(BasicAuthorization.class);
