@@ -38,7 +38,7 @@ public class MethodFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (request.getHeader("Authorization") == null) {
-            response.sendError(401);
+            response.sendError(401, "Unauthorized");
             filterChain.doFilter(request, response);
             return;
         }
@@ -52,33 +52,25 @@ public class MethodFilter extends OncePerRequestFilter {
         if (handlerMethod.hasMethodAnnotation(BasicAuthorization.class)) {
             BasicAuthorization annotation = handlerMethod.getMethodAnnotation(BasicAuthorization.class);
             List<String> roles = Arrays.asList(annotation.roles());
-            System.out.println(user.getRoles().get(0));
             for (String role : roles) {
                 if (user.getRoles().contains(role)) {
                     response.setStatus(200);
                     response.setHeader("Authorization", "authenticated");
-                    break;
-                } else {
-                    response.sendError(403);
+                    filterChain.doFilter(request, response);
+                    return;
                 }
             }
-            filterChain.doFilter(request, response);
-            return;
         }
         if (handlerMethod.hasMethodAnnotation(FloorLevelAuthorization.class)) {
             String role = handlerMethod.getMethodAnnotation(FloorLevelAuthorization.class).floorRole();
             if (floorLevel.isRoleGreaterOrEquals(role, user.getRoles())) {
                 response.setStatus(200);
                 response.setHeader("Authorization", "authenticated");
-            }
+            } else response.sendError(403, "Forbidden");
             filterChain.doFilter(request, response);
             return;
         }
-        if (handlerMethod.hasMethodAnnotation(NoAuthorization.class)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        response.sendError(403);
+        response.sendError(403, "Forbidden");
         filterChain.doFilter(request, response);
     }
 }
