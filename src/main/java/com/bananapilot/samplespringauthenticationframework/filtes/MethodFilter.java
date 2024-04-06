@@ -70,6 +70,10 @@ public class MethodFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        if (handlerMethod.hasMethodAnnotation(NoAuthorization.class)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         response.sendError(403, "Forbidden");
         filterChain.doFilter(request, response);
     }

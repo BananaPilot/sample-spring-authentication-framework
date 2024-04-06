@@ -39,10 +39,7 @@ public class LoginFilter extends OncePerRequestFilter {
             response.sendError(403);
             return;
         }
-        response.setHeader("Authorization", jwtUtils.getJWT(
-                params.get("username")[0],
-                Integer.parseInt(params.get("id")[0]),
-                params.get("roles")[0]));
+        response.setHeader("Authorization", jwtUtils.getJWT(params.get("username")[0], Integer.parseInt(params.get("id")[0]), params.get("roles")[0]));
         response.setStatus(200);
     }
 }
