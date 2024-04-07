@@ -1,4 +1,4 @@
-package com.bananapilot.samplespringauthenticationframework.filtes;
+package com.bananapilot.samplespringauthenticationframework.utils;
 
 import java.util.List;
 

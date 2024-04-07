@@ -2,6 +2,7 @@ package com.bananapilot.samplespringauthenticationframework.filtes;
 
 import com.bananapilot.samplespringauthenticationframework.service.UserService;
 import com.bananapilot.samplespringauthenticationframework.types.User;
+import com.bananapilot.samplespringauthenticationframework.utils.Constants;
 import com.bananapilot.samplespringauthenticationframework.utils.JWTUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,7 +40,7 @@ public class LoginFilter extends OncePerRequestFilter {
             response.sendError(403);
             return;
         }
-        response.setHeader("Authorization", jwtUtils.getJWT(params.get("username")[0], Integer.parseInt(params.get("id")[0]), params.get("roles")[0]));
+        response.setHeader(Constants.AUTHORIZATION_HEADER, jwtUtils.getJWT(params.get("username")[0], Integer.parseInt(params.get("id")[0]), params.get("roles")[0]));
         response.setStatus(200);
     }
 }

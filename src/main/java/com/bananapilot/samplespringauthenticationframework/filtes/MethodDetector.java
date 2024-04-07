@@ -1,5 +1,6 @@
 package com.bananapilot.samplespringauthenticationframework.filtes;
 
+import com.bananapilot.samplespringauthenticationframework.utils.Constants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,15 +25,15 @@ public class MethodDetector extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        RequestMappingHandlerMapping handlerMapping = (RequestMappingHandlerMapping) applicationContext.getBean("requestMappingHandlerMapping");
-        HandlerExecutionChain handlerExeChain = null;
+        RequestMappingHandlerMapping handlerMapping = (RequestMappingHandlerMapping) applicationContext.getBean(Constants.HANDLER_METHOD);
+        HandlerExecutionChain handlerExeChain;
         try {
             handlerExeChain = handlerMapping.getHandler(request);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         Assert.notNull(handlerExeChain, "handlerExeChain is null");
-        request.setAttribute("requestMappingHandlerMapping", handlerExeChain.getHandler());
+        request.setAttribute(Constants.HANDLER_METHOD, handlerExeChain.getHandler());
         filterChain.doFilter(request, response);
     }
 }
