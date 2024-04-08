@@ -3,8 +3,8 @@ package com.bananapilot.samplespringauthenticationframework.filtes;
 import com.bananapilot.samplespringauthenticationframework.filtes.annotations.BasicAuthorization;
 import com.bananapilot.samplespringauthenticationframework.filtes.annotations.FloorLevelAuthorization;
 import com.bananapilot.samplespringauthenticationframework.filtes.annotations.NoAuthorization;
-import com.bananapilot.samplespringauthenticationframework.service.UserService;
-import com.bananapilot.samplespringauthenticationframework.types.User;
+import com.bananapilot.samplespringauthenticationframework.service.UserDetailsService;
+import com.bananapilot.samplespringauthenticationframework.types.UserDetails;
 import com.bananapilot.samplespringauthenticationframework.utils.Constants;
 import com.bananapilot.samplespringauthenticationframework.utils.FloorLevelImpl;
 import com.bananapilot.samplespringauthenticationframework.utils.JWTUtils;
@@ -32,10 +32,16 @@ public class MethodFilter extends OncePerRequestFilter {
     JWTUtils jwtUtils;
 
     @Autowired
-    UserService userService;
+    UserDetailsService userService;
 
     @Autowired(required = false)
     FloorLevelImpl floorLevel;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute(Constants.HANDLER_METHOD);
+        return handlerMethod.hasMethodAnnotation(NoAuthorization.class);
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -45,17 +51,17 @@ public class MethodFilter extends OncePerRequestFilter {
             return;
         }
         Jws<Claims> claimsJws = jwtUtils.validate(request.getHeader("Authorization"));
-        User user = User.UserBuilder.anUser()
-                .withId(claimsJws.getBody().get("user-id", Integer.class))
-                .withUsername(claimsJws.getBody().get("user-username", String.class))
-                .withRoles(List.of(claimsJws.getBody().get("user-roles", String.class).split(", ")))
+        UserDetails userDetails = UserDetails.UserDetailsBuilder.anUserDetails()
+                .withId(claimsJws.getBody().get("userDetails-id", Integer.class))
+                .withUsername(claimsJws.getBody().get("userDetails-username", String.class))
+                .withRoles(List.of(claimsJws.getBody().get("userDetails-roles", String.class).split(", ")))
                 .build();
         HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute(Constants.HANDLER_METHOD);
         if (handlerMethod.hasMethodAnnotation(BasicAuthorization.class)) {
             BasicAuthorization annotation = handlerMethod.getMethodAnnotation(BasicAuthorization.class);
             List<String> roles = Arrays.asList(annotation.roles());
             for (String role : roles) {
-                if (user.getRoles().contains(role)) {
+                if (userDetails.getRoles().contains(role)) {
                     response.setStatus(200);
                     response.setHeader(Constants.AUTHORIZATION_HEADER, Constants.AUTHENTICATED);
                     filterChain.doFilter(request, response);
@@ -65,14 +71,10 @@ public class MethodFilter extends OncePerRequestFilter {
         }
         if (handlerMethod.hasMethodAnnotation(FloorLevelAuthorization.class)) {
             String role = handlerMethod.getMethodAnnotation(FloorLevelAuthorization.class).floorRole();
-            if (floorLevel.isRoleGreaterOrEquals(role, user.getRoles())) {
+            if (floorLevel.isRoleGreaterOrEquals(role, userDetails.getRoles())) {
                 response.setStatus(200);
                 response.setHeader(Constants.AUTHORIZATION_HEADER, Constants.AUTHENTICATED);
             } else response.sendError(403, "Forbidden");
-            filterChain.doFilter(request, response);
-            return;
-        }
-        if (handlerMethod.hasMethodAnnotation(NoAuthorization.class)) {
             filterChain.doFilter(request, response);
             return;
         }

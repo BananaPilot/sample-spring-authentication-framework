@@ -1,7 +1,7 @@
 package com.bananapilot.samplespringauthenticationframework.filtes;
 
-import com.bananapilot.samplespringauthenticationframework.service.UserService;
-import com.bananapilot.samplespringauthenticationframework.types.User;
+import com.bananapilot.samplespringauthenticationframework.service.UserDetailsService;
+import com.bananapilot.samplespringauthenticationframework.types.UserDetails;
 import com.bananapilot.samplespringauthenticationframework.utils.Constants;
 import com.bananapilot.samplespringauthenticationframework.utils.JWTUtils;
 import jakarta.servlet.FilterChain;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
 
 @Component
@@ -25,7 +24,7 @@ public class LoginFilter extends OncePerRequestFilter {
     JWTUtils jwtUtils;
 
     @Autowired
-    UserService userService;
+    UserDetailsService userService;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -35,8 +34,8 @@ public class LoginFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Map<String, String[]> params = request.getParameterMap();
-        User user = userService.getUser(params.get("username")[0], params.get("password")[0]);
-        if (user == null) {
+        UserDetails userDetails = userService.checkCredentials(params.get("username")[0], params.get("password")[0]);
+        if (userDetails == null) {
             response.sendError(403);
             return;
         }

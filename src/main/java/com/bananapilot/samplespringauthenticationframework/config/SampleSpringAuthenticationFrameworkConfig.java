@@ -3,7 +3,7 @@ package com.bananapilot.samplespringauthenticationframework.config;
 import com.bananapilot.samplespringauthenticationframework.filtes.LoginFilter;
 import com.bananapilot.samplespringauthenticationframework.filtes.MethodDetector;
 import com.bananapilot.samplespringauthenticationframework.filtes.MethodFilter;
-import com.bananapilot.samplespringauthenticationframework.service.UserService;
+import com.bananapilot.samplespringauthenticationframework.service.UserDetailsService;
 import com.bananapilot.samplespringauthenticationframework.service.UserServiceDefaultImpl;
 import com.bananapilot.samplespringauthenticationframework.utils.JWTUtils;
 import org.slf4j.Logger;
@@ -25,8 +25,8 @@ public class SampleSpringAuthenticationFrameworkConfig {
     }
 
     @Bean
-    @ConditionalOnMissingBean(UserService.class)
-    public UserService userService() {
+    @ConditionalOnMissingBean(UserDetailsService.class)
+    public UserDetailsService userService() {
         logger.info("UserService Bean not found, Creating a Bean of class UserServiceDefaultImpl");
         logger.warn("To remove this warn create a class that extends UserService.class");
         return new UserServiceDefaultImpl();
