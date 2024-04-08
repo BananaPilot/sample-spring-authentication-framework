@@ -1,5 +1,6 @@
 package com.bananapilot.samplespringauthenticationframework.filtes;
 
+import com.bananapilot.samplespringauthenticationframework.filtes.annotations.AnnotationImpl;
 import com.bananapilot.samplespringauthenticationframework.filtes.annotations.BasicAuthorization;
 import com.bananapilot.samplespringauthenticationframework.filtes.annotations.FloorLevelAuthorization;
 import com.bananapilot.samplespringauthenticationframework.filtes.annotations.NoAuthorization;
@@ -21,7 +22,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.method.HandlerMethod;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -37,6 +37,9 @@ public class MethodFilter extends OncePerRequestFilter {
     @Autowired(required = false)
     FloorLevelImpl floorLevel;
 
+    @Autowired
+    AnnotationImpl annotationImpl;
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute(Constants.HANDLER_METHOD);
@@ -50,32 +53,19 @@ public class MethodFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        Jws<Claims> claimsJws = jwtUtils.validate(request.getHeader("Authorization"));
+        Jws<Claims> claimsJws = jwtUtils.validate(request.getHeader(Constants.AUTHORIZATION_HEADER));
         UserDetails userDetails = UserDetails.UserDetailsBuilder.anUserDetails()
-                .withId(claimsJws.getBody().get("userDetails-id", Integer.class))
-                .withUsername(claimsJws.getBody().get("userDetails-username", String.class))
-                .withRoles(List.of(claimsJws.getBody().get("userDetails-roles", String.class).split(", ")))
+                .withId(claimsJws.getBody().get("user-id", Integer.class))
+                .withUsername(claimsJws.getBody().get("user-username", String.class))
+                .withRoles(List.of(claimsJws.getBody().get("user-roles", String.class).split(", ")))
                 .build();
         HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute(Constants.HANDLER_METHOD);
         if (handlerMethod.hasMethodAnnotation(BasicAuthorization.class)) {
-            BasicAuthorization annotation = handlerMethod.getMethodAnnotation(BasicAuthorization.class);
-            List<String> roles = Arrays.asList(annotation.roles());
-            for (String role : roles) {
-                if (userDetails.getRoles().contains(role)) {
-                    response.setStatus(200);
-                    response.setHeader(Constants.AUTHORIZATION_HEADER, Constants.AUTHENTICATED);
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-            }
+            annotationImpl.basicAuthorizationImpl(filterChain, response, request, userDetails, handlerMethod);
+            return;
         }
         if (handlerMethod.hasMethodAnnotation(FloorLevelAuthorization.class)) {
-            String role = handlerMethod.getMethodAnnotation(FloorLevelAuthorization.class).floorRole();
-            if (floorLevel.isRoleGreaterOrEquals(role, userDetails.getRoles())) {
-                response.setStatus(200);
-                response.setHeader(Constants.AUTHORIZATION_HEADER, Constants.AUTHENTICATED);
-            } else response.sendError(403, "Forbidden");
-            filterChain.doFilter(request, response);
+            annotationImpl.floorLevelImpl(filterChain, response, request, userDetails, handlerMethod, floorLevel);
             return;
         }
         response.sendError(403, "Forbidden");
