@@ -2,21 +2,21 @@ package com.bananapilot.samplespringauthenticationframework.types;
 
 import java.util.List;
 
-public class User {
+public class UserDetails {
 
     private int id;
     private String username;
     private String password;
     private List<String> roles;
 
-    public User(int id, String username, String password, List<String> roles) {
+    public UserDetails(int id, String username, String password, List<String> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.roles = roles;
     }
 
-    public User() {
+    public UserDetails() {
     }
 
     public int getId() {
@@ -45,7 +45,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserDetails{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
@@ -53,41 +53,42 @@ public class User {
                 '}';
     }
 
-    public static final class UserBuilder {
+
+    public static final class UserDetailsBuilder {
         private int id;
         private String username;
         private String password;
         private List<String> roles;
 
-        private UserBuilder() {
+        private UserDetailsBuilder() {
         }
 
-        public static UserBuilder anUser() {
-            return new UserBuilder();
+        public static UserDetailsBuilder anUserDetails() {
+            return new UserDetailsBuilder();
         }
 
-        public UserBuilder withId(int id) {
+        public UserDetailsBuilder withId(int id) {
             this.id = id;
             return this;
         }
 
-        public UserBuilder withUsername(String username) {
+        public UserDetailsBuilder withUsername(String username) {
             this.username = username;
             return this;
         }
 
-        public UserBuilder withPassword(String password) {
+        public UserDetailsBuilder withPassword(String password) {
             this.password = password;
             return this;
         }
 
-        public UserBuilder withRoles(List<String> roles) {
+        public UserDetailsBuilder withRoles(List<String> roles) {
             this.roles = roles;
             return this;
         }
 
-        public User build() {
-            return new User(id, username, password, roles);
+        public UserDetails build() {
+            return new UserDetails(id, username, password, roles);
         }
     }
 }

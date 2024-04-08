@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.bananapilot</groupId>
     <artifactId>sample-spring-authentication-framework</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>sample-spring-authentication-framework</name>
     <description>sample-spring-authentication-framework</description>
     <properties>
@@ -48,6 +48,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

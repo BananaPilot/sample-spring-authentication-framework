@@ -31,7 +31,7 @@ public class JWTUtils {
         key = Keys.hmacShaKeyFor(hashKey.getBytes());
     }
 
-    public String getJWT(String username, int userId, List<String> roles) {
+    public String getJWT(String username, int userId, String roles) {
         return Jwts.builder()
                 .setSubject(username)
                 .setAudience(audience)
