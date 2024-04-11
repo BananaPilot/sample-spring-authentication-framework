@@ -23,6 +23,7 @@ import org.springframework.web.method.HandlerMethod;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 @Order(2)
@@ -55,7 +56,7 @@ public class MethodFilter extends OncePerRequestFilter {
         }
         Jws<Claims> claimsJws = jwtUtils.validate(request.getHeader(Constants.AUTHORIZATION_HEADER));
         UserDetails userDetails = UserDetails.UserDetailsBuilder.anUserDetails()
-                .withId(claimsJws.getBody().get("user-id", Integer.class))
+                .withId(claimsJws.getBody().get("user-id", UUID.class))
                 .withUsername(claimsJws.getBody().get("user-username", String.class))
                 .withRoles(List.of(claimsJws.getBody().get("user-roles", String.class).split(", ")))
                 .build();

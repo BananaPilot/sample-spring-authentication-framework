@@ -1,15 +1,16 @@
 package com.bananapilot.samplespringauthenticationframework.types;
 
 import java.util.List;
+import java.util.UUID;
 
 public class UserDetails {
 
-    private int id;
+    private UUID id;
     private String username;
     private String password;
     private List<String> roles;
 
-    public UserDetails(int id, String username, String password, List<String> roles) {
+    public UserDetails(UUID id, String username, String password, List<String> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -19,7 +20,7 @@ public class UserDetails {
     public UserDetails() {
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -55,7 +56,7 @@ public class UserDetails {
 
 
     public static final class UserDetailsBuilder {
-        private int id;
+        private UUID id;
         private String username;
         private String password;
         private List<String> roles;
@@ -67,7 +68,7 @@ public class UserDetails {
             return new UserDetailsBuilder();
         }
 
-        public UserDetailsBuilder withId(int id) {
+        public UserDetailsBuilder withId(UUID id) {
             this.id = id;
             return this;
         }

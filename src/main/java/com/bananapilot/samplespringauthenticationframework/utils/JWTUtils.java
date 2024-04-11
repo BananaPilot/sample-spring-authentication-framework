@@ -11,6 +11,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 
 public class JWTUtils {
@@ -31,7 +32,7 @@ public class JWTUtils {
         key = Keys.hmacShaKeyFor(hashKey.getBytes());
     }
 
-    public String getJWT(String username, int userId, String roles) {
+    public String getJWT(String username, UUID userId, String roles) {
         return Jwts.builder()
                 .setSubject(username)
                 .setAudience(audience)

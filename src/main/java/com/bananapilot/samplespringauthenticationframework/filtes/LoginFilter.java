@@ -15,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 @Component
 @Order(0)
@@ -28,7 +29,7 @@ public class LoginFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return !request.getRequestURI().equals("/login");
+        return !request.getRequestURI().equals("/login") || !request.getRequestURI().contains("/login");
     }
 
     @Override
@@ -39,7 +40,7 @@ public class LoginFilter extends OncePerRequestFilter {
             response.sendError(403);
             return;
         }
-        response.setHeader(Constants.AUTHORIZATION_HEADER, jwtUtils.getJWT(params.get("username")[0], Integer.parseInt(params.get("id")[0]), params.get("roles")[0]));
+        response.setHeader(Constants.AUTHORIZATION_HEADER, jwtUtils.getJWT(params.get("username")[0], UUID.fromString(params.get("id")[0]), params.get("roles")[0]));
         response.setStatus(200);
     }
 }
