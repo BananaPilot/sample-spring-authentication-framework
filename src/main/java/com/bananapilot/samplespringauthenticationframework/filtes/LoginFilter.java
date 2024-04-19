@@ -1,5 +1,6 @@
 package com.bananapilot.samplespringauthenticationframework.filtes;
 
+import com.bananapilot.samplespringauthenticationframework.repo.UserDetailsDao;
 import com.bananapilot.samplespringauthenticationframework.service.UserDetailsService;
 import com.bananapilot.samplespringauthenticationframework.types.UserDetails;
 import com.bananapilot.samplespringauthenticationframework.utils.Constants;
@@ -28,6 +29,9 @@ public class LoginFilter extends OncePerRequestFilter {
     @Autowired
     UserDetailsService userService;
 
+    @Autowired
+    UserDetailsDao userDetailsDao;
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return !request.getRequestURI().contains("/login");
@@ -41,7 +45,7 @@ public class LoginFilter extends OncePerRequestFilter {
             response.sendError(403);
             return;
         }
-        response.setHeader(Constants.AUTHORIZATION_HEADER, jwtUtils.getJWT(params.get("username")[0], UUID.fromString(params.get("id")[0]), params.get("roles")[0]));
+        response.setHeader(Constants.AUTHORIZATION_HEADER, jwtUtils.getJWT(params.get("username")[0], Long.parseLong(params.get("id")[0]), userDetailsDao.getUserByUsername(params.get("username")[0]).getRoles().toString()));
 
         response.setStatus(200);
     }
