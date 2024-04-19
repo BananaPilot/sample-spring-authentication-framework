@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class LoginFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return !request.getRequestURI().equals("/login") || !request.getRequestURI().contains("/login");
+        return !request.getRequestURI().contains("/login");
     }
 
     @Override
@@ -41,6 +42,7 @@ public class LoginFilter extends OncePerRequestFilter {
             return;
         }
         response.setHeader(Constants.AUTHORIZATION_HEADER, jwtUtils.getJWT(params.get("username")[0], UUID.fromString(params.get("id")[0]), params.get("roles")[0]));
+
         response.setStatus(200);
     }
 }

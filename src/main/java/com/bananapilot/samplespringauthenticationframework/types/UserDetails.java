@@ -5,12 +5,12 @@ import java.util.UUID;
 
 public class UserDetails {
 
-    private UUID id;
+    private Long id;
     private String username;
     private String password;
     private List<String> roles;
 
-    public UserDetails(UUID id, String username, String password, List<String> roles) {
+    public UserDetails(Long id, String username, String password, List<String> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -20,7 +20,7 @@ public class UserDetails {
     public UserDetails() {
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
@@ -56,7 +56,7 @@ public class UserDetails {
 
 
     public static final class UserDetailsBuilder {
-        private UUID id;
+        private Long id;
         private String username;
         private String password;
         private List<String> roles;
@@ -68,7 +68,7 @@ public class UserDetails {
             return new UserDetailsBuilder();
         }
 
-        public UserDetailsBuilder withId(UUID id) {
+        public UserDetailsBuilder withId(Long id) {
             this.id = id;
             return this;
         }
