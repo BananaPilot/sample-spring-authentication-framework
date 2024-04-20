@@ -58,8 +58,9 @@ public class MethodFilter extends OncePerRequestFilter {
         UserDetails userDetails = UserDetails.UserDetailsBuilder.anUserDetails()
                 .withId(claimsJws.getBody().get("user-id", Long.class))
                 .withUsername(claimsJws.getBody().get("user-username", String.class))
-                .withRoles(List.of(claimsJws.getBody().get("user-roles", String.class).split(", ")))
+                .withRoles(claimsJws.getBody().get("user-roles", List.class))
                 .build();
+        System.out.println(userDetails);
         HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute(Constants.HANDLER_METHOD);
         if (handlerMethod.hasMethodAnnotation(BasicAuthorization.class)) {
             annotationImpl.basicAuthorizationImpl(filterChain, response, request, userDetails, handlerMethod);

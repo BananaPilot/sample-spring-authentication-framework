@@ -16,6 +16,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,7 +47,8 @@ public class LoginFilter extends OncePerRequestFilter {
             response.sendError(403);
             return;
         }
-        response.setHeader(Constants.AUTHORIZATION_HEADER, jwtUtils.getJWT(params.get("username")[0], Long.parseLong(params.get("id")[0]), userDetailsDao.getUserByUsername(params.get("username")[0]).getRoles().toString()));
+        System.out.println(userDetailsDao.getUserByUsername(params.get("username")[0]).getRoles());
+        response.setHeader(Constants.AUTHORIZATION_HEADER, jwtUtils.getJWT(params.get("username")[0], Long.parseLong(params.get("id")[0]), userDetailsDao.getUserByUsername(params.get("username")[0]).getRoles()));
 
         response.setStatus(200);
     }
