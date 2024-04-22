@@ -22,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.method.HandlerMethod;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,13 +55,12 @@ public class MethodFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        Jws<Claims> claimsJws = jwtUtils.validate(request.getHeader(Constants.AUTHORIZATION_HEADER));
+        Jws<Claims> claimsJws = jwtUtils.validate(request.getHeader(Constants.AUTHORIZATION_HEADER).split(" ")[1]);
         UserDetails userDetails = UserDetails.UserDetailsBuilder.anUserDetails()
                 .withId(claimsJws.getBody().get("user-id", Long.class))
                 .withUsername(claimsJws.getBody().get("user-username", String.class))
                 .withRoles(claimsJws.getBody().get("user-roles", List.class))
                 .build();
-        System.out.println(userDetails);
         HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute(Constants.HANDLER_METHOD);
         if (handlerMethod.hasMethodAnnotation(BasicAuthorization.class)) {
             annotationImpl.basicAuthorizationImpl(filterChain, response, request, userDetails, handlerMethod);
