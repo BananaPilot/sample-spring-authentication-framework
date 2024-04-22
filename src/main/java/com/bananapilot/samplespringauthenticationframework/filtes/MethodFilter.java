@@ -44,7 +44,7 @@ public class MethodFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute(Constants.HANDLER_METHOD);
-        return handlerMethod.hasMethodAnnotation(NoAuthorization.class) && Boolean.TRUE.equals(((Boolean)request.getAttribute(Constants.SKIP_AUTHORIZATION_FILTER_CHAIN_ATTRIBUTE)));
+        return Boolean.TRUE.equals(request.getAttribute(Constants.SKIP_AUTHORIZATION_FILTER_CHAIN_ATTRIBUTE)) || handlerMethod.hasMethodAnnotation(NoAuthorization.class);
     }
 
     @Override
