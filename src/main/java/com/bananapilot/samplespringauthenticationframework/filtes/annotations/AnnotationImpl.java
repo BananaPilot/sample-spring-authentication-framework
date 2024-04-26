@@ -25,7 +25,7 @@ public class AnnotationImpl {
                 return;
             }
         }
-        throw new RuntimeException("Jwt is not correct");
+        response.sendError(403, "Forbidden");
     }
 
     public void floorLevelImpl(FilterChain filterChain, HttpServletResponse response, HttpServletRequest request, UserDetails userDetails, HandlerMethod handlerMethod, FloorLevelImpl floorLevel) throws ServletException, IOException {
@@ -36,7 +36,6 @@ public class AnnotationImpl {
             filterChain.doFilter(request, response);
         } else{
             response.sendError(403, "Forbidden");
-            throw new RuntimeException("Jwt is not correct");
         }
     }
 }
