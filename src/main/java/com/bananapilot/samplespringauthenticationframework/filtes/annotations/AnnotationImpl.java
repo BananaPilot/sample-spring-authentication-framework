@@ -22,8 +22,10 @@ public class AnnotationImpl {
                 response.setStatus(200);
                 response.setHeader(Constants.AUTHORIZATION_HEADER, Constants.AUTHENTICATED);
                 filterChain.doFilter(request, response);
+                return;
             }
         }
+        throw new RuntimeException("Jwt is not correct");
     }
 
     public void floorLevelImpl(FilterChain filterChain, HttpServletResponse response, HttpServletRequest request, UserDetails userDetails, HandlerMethod handlerMethod, FloorLevelImpl floorLevel) throws ServletException, IOException {
@@ -31,7 +33,10 @@ public class AnnotationImpl {
         if (floorLevel.isRoleGreaterOrEquals(role, userDetails.getRoles())) {
             response.setStatus(200);
             response.setHeader(Constants.AUTHORIZATION_HEADER, Constants.AUTHENTICATED);
-        } else response.sendError(403, "Forbidden");
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+        } else{
+            response.sendError(403, "Forbidden");
+            throw new RuntimeException("Jwt is not correct");
+        }
     }
 }

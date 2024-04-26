@@ -47,7 +47,6 @@ public class LoginFilter extends OncePerRequestFilter {
             response.sendError(403);
             return;
         }
-        System.out.println(userDetailsDao.getUserByUsername(params.get("username")[0]).getRoles());
         response.setHeader(Constants.AUTHORIZATION_HEADER, jwtUtils.getJWT(params.get("username")[0], Long.parseLong(params.get("id")[0]), userDetailsDao.getUserByUsername(params.get("username")[0]).getRoles()));
 
         response.setStatus(200);
