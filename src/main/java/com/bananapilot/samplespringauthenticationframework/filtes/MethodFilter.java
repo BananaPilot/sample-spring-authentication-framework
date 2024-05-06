@@ -52,7 +52,6 @@ public class MethodFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (request.getHeader(Constants.AUTHORIZATION_HEADER) == null) {
             response.sendError(401, "Unauthorized");
-            filterChain.doFilter(request, response);
             return;
         }
         Jws<Claims> claimsJws = jwtUtils.validate(request.getHeader(Constants.AUTHORIZATION_HEADER).split(" ")[1]);
