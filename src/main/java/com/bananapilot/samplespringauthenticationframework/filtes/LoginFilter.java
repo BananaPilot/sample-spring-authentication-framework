@@ -42,13 +42,11 @@ public class LoginFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Map<String, String[]> params = request.getParameterMap();
+        Assert.notNull(params.get("username")[0], "Username is null");
+        Assert.notNull(params.get("password")[0], "Password is null");
         UserDetails userDetails = userService.checkCredentials(params.get("username")[0], params.get("password")[0]);
-        if (userDetails == null) {
-            response.sendError(403);
-            return;
-        }
-        response.setHeader(Constants.AUTHORIZATION_HEADER, jwtUtils.getJWT(params.get("username")[0], userDetails.getId(), userDetailsDao.getUserByUsername(params.get("username")[0]).getRoles()));
-
+        response.setHeader(Constants.AUTHORIZATION_HEADER, jwtUtils.getJWT(userDetails.getUsername(), userDetails.getId(), userDetailsDao.getUserByUsername(userDetails.getUsername()).getRoles()));
         response.setStatus(200);
+        filterChain.doFilter(request, response);
     }
 }
