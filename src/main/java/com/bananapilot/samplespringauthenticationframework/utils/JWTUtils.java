@@ -35,9 +35,12 @@ public class JWTUtils {
     public String getJWT(String username, Long userId, List<String> roles) {
         return Jwts.builder()
                 .setSubject(username)
-                .setAudience(audience)
+                .setAudience(this.audience)
                 .setExpiration(new Date(System.currentTimeMillis() + timeToExpire))
-                .setClaims(new HashMap<>() {{
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setNotBefore(new Date(System.currentTimeMillis()))
+                .setId(UUID.randomUUID().toString())
+                .addClaims(new HashMap<>() {{
                     put("user-username", username);
                     put("user-id", userId);
                     put("user-roles", roles);
