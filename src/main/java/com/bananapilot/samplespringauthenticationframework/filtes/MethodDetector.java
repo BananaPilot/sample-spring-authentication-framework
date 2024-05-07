@@ -23,6 +23,18 @@ public class MethodDetector extends OncePerRequestFilter {
     @Autowired
     ApplicationContext applicationContext;
 
+    @Autowired(required = false)
+    ExclusionPatterEvaluator exclusionPatterEvaluator;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        if(exclusionPatterEvaluator == null) {
+            return false;
+        } else {
+            return exclusionPatterEvaluator.evaluateExclusion(request);
+        }
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         RequestMappingHandlerMapping handlerMapping = (RequestMappingHandlerMapping) applicationContext.getBean(Constants.HANDLER_METHOD);

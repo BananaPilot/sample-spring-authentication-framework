@@ -3,6 +3,7 @@ package com.bananapilot.samplespringauthenticationframework.config;
 import com.bananapilot.samplespringauthenticationframework.filtes.LoginFilter;
 import com.bananapilot.samplespringauthenticationframework.filtes.MethodDetector;
 import com.bananapilot.samplespringauthenticationframework.filtes.MethodFilter;
+import com.bananapilot.samplespringauthenticationframework.filtes.annotations.AnnotationImpl;
 import com.bananapilot.samplespringauthenticationframework.service.UserDetailsService;
 import com.bananapilot.samplespringauthenticationframework.service.UserServiceDefaultImpl;
 import com.bananapilot.samplespringauthenticationframework.utils.JWTUtils;
@@ -22,6 +23,12 @@ public class SampleSpringAuthenticationFrameworkConfig {
     public JWTUtils jwtUtils() {
         logger.info("Creating a JWTUtils Bean");
         return new JWTUtils();
+    }
+
+    @Bean
+    public AnnotationImpl annotation() {
+        logger.info("Creating implementation for annotations");
+        return new AnnotationImpl();
     }
 
     @Bean
